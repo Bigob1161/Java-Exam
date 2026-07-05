@@ -1,7 +1,7 @@
 package main;
 import java.util.*;
-import logic.*;
 import java.util.stream.*;
+import logic.*;
 import models.ConveyorBelt;
 import models.FactoryEquipment;
 import models.HydraulicPress;
@@ -91,7 +91,15 @@ public class Main {
         manager.addProtocol(new SafetyProtocol<>("Профилактика конвейеров", condition, action));
     }
     static void analytics(){
-        List<String> shopStopWorking = manager.getAnalyticsStream().entrySet.stream().filter(entry -> entry.getValue.stream().anyMatch(equipment -> !equipment.isWorking())).map(entry -> entry.getKey()).collect(Collectors.toList());
+        List<String> shopStopWorking = manager.getWorkShops().entrySet().stream()
+            .filter(entry -> entry.getValue().stream().anyMatch(equipment -> !equipment.isWorking()))
+            .map(Map.Entry::getKey)
+            .collect(Collectors.toList());
+        if (shopStopWorking.isEmpty()) {
+            System.out.println("Все цеха работают");
+        } else {
+            System.out.println("Цеха с остановленным оборудованием: " + String.join(", ", shopStopWorking));
+        }
     }
 
     static int readInt(){
